@@ -2,8 +2,8 @@
   var Snakes = window.Snakes = window.Snakes || {};
   
   var Board = Snakes.Board = function (){
-    this.apple = [10, 7];
-    //this.makeNewApple();
+    this.apple = null;
+    this.makeNewApple();
   }
   
   Board.prototype.makeNewApple = function () {

@@ -8,7 +8,7 @@
   
   Game.prototype.play = function (){
     //check apple
-    if (this.snake.newPos() == this.board.apple) {
+    if (this.snake.newPos().join("-") === this.board.apple.join("-")) {
       this.snake.addBody(this.board.apple);
       this.board.makeNewApple();
     }
