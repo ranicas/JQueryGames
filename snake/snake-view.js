@@ -11,9 +11,13 @@
   
   View.prototype.tick = function () {
     var view = this;
-    setInterval(function(){
+    var step = setInterval(function(){
       view.game.play();
       view.render();
+      if (view.game.isOver()) {
+        clearInterval(step);
+        $(".over").css("top", "100px")
+      }
     }, 400)
   }
   
@@ -63,8 +67,15 @@
     var $cell = this.$board.find(pos);
     return $cell
   }
+  
   View.prototype.render = function () {
     clearBoard.call(this);
+    if (this.game.isOver()) {
+      var blood = this.game.snake.bloodSplatter();
+      blood.forEach(function(el){
+         pos.call(this,el).css("background", "red");
+      }.bind(this));
+    }
     this.game.snake.body.forEach(function(el){
       pos.call(this,el).css("background", "green");
     }.bind(this));

@@ -1,3 +1,6 @@
+body {
+  position: relative;
+}
 .cell {
   border: 1px solid black;
   width: 15px;
@@ -21,4 +24,16 @@
 form {
   margin-top: 10px;
   margin-left: 47%;
+}
+
+.over {
+  font-size: 100px;
+  border: solid;
+  padding: 15px;
+  position: absolute;
+  left: 28%;
+  top: -300px;
+  background: white;
+/*  display: none;*/
+  transition: 2s;
 }

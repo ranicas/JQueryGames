@@ -15,4 +15,16 @@
     this.snake.move.bind(this.snake)();
   }
   
+  Game.prototype.isOver = function () {
+    var snakePos = this.snake.body[0];
+    
+    if (outOfBound(snakePos)) {
+      return true;
+    }
+  }
+  
+  function outOfBound(pos) {
+    return (pos[0] < 0 || pos[0] >= 20 ||
+     pos[1] < 0 || pos[1] >= 20);
+  }
 })();

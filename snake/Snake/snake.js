@@ -30,4 +30,14 @@
     this.body.unshift(newPos);
   }
   
+  Snake.prototype.bloodSplatter = function() {
+    var bloodArray = [];
+    var head = this.body[1];
+    bloodArray.push([head[0], head[1] - 1]);
+    bloodArray.push([head[0], head[1] + 1]);
+    bloodArray.push([head[0] - 1, head[1]]);
+    bloodArray.push([head[0] + 1, head[1]]);
+    return bloodArray;
+  }
+  
 })();
