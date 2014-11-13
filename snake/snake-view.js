@@ -1,86 +1,76 @@
 (function () {
-  var Hanoi = this.Hanoi = this.Hanoi || {};
+  var Snakes = this.Snakes = this.Snakes || {};
   
-  var View = Hanoi.View = function (game, $el) {
+  var View = Snakes.View = function (game, $el) {
     this.game = game;
     this.$board = $el;
     this.setupBoard();
     this.bindEvent();
-    this.startTower = null;
+    this.tick();
+  }
+  
+  View.prototype.tick = function () {
+    var view = this;
+    setInterval(function(){
+      view.game.play();
+      view.render();
+    }, 400)
   }
   
   View.prototype.bindEvent =  function () {
-    this.$board.on("click", this.moveTower.bind(this));
+    $('body').on("keydown", this.changeDirection.bind(this));
   }
   
-  View.prototype.moveTower = function (event) {
-    if (this.game.isWon()) {
-      return;
-    }
-    var tower = parseInt($(event.target).attr("id")[0]);
-    if (this.startTower !== null) {
-      try {
-        this.game.move(this.startTower, tower);
-        undoHighlight.call(this);
-        this.startTower = null;
-        this.render();
-        if (this.game.isWon()) {
-          return alert("gratz!!!!!");
-        }
-      } catch (err) {
-        return alert ("invalid move");
+  View.prototype.changeDirection = function (event) {
+    var dir = this.game.snake.direction;
+    
+      if (event.which === 39 && dir !== 'left') {
+          this.game.snake.direction = 'right';
+      } else if (event.which === 37 && dir !== 'right') {
+          this.game.snake.direction = 'left';
+      } else if (event.which === 38 && dir !== 'down') {
+          this.game.snake.direction = 'up';
+      } else if (event.which === 40 && dir !== 'up') {
+          this.game.snake.direction = 'down';
       }
-    } else {
-        highlightPile.call(this, tower);
-        this.startTower = tower;
-    }
   }
   
-  function highlightPile (tower) {
-    for (var i = 0; i < 3; i++) {
-      var cell = this.$board.find(("#" + tower + i));
-      cell.css("border-color", "yellow");
-    }
-  }
-  
-  function undoHighlight () {
-    for (var i = 0; i < 3; i++) {
-      var cell = this.$board.find(("#" + this.startTower + i));
-      cell.css("border-color", "black");
-    }
-  }
   
   View.prototype.setupBoard = function () {
     var towerString = "<div class='tower'></div>"
     var largePileString = '';
-    for (var j = 2; j >= 0; j--) {
-      for (var i = 0; i < 3; i++) {
-        largePileString += "<div class='cell' id='"+ i + '' + j + "'></div>";
+    for (var j = 0; j < 20; j++) {
+      for (var i = 0; i < 20; i++) {
+        largePileString += "<div class='cell' id='"+ i + '-' + j + "'></div>";
       }
     }
     this.$board.html(largePileString);
     this.render();
   }
   
-  View.prototype.render = function () {
-    var $board = this.$board;
-    for (var i = 0; i < 3; i ++) {
-      for (var j = 0; j < 3; j++){
-        var pos = '#' + i + j;
-        var $cell = $board.find(pos);
-        var el = this.game.towers[i][j];
-        
-        if (el === 3) {
-          $cell.css("background", "darkred");
-        } else if (el === 2) {
-          $cell.css("background", "red");
-        } else if (el === 1) {
-          $cell.css("background", "pink");
-        } else if (el === undefined){
-          $cell.css("background", "white");
-        } 
+  function clearBoard () {
+    for (var i = 0; i < 20; i ++) {
+      for (var j = 0; j < 20; j++){
+        var pos = '#' + i  + '-' + j;
+        var $cell = this.$board.find(pos);
+        $cell.css("background", "white");
       }
     }
+  }
+  
+  function pos (coord) {
+    var pos = pos = '#' + coord[0]  + '-' + coord[1];
+    var $cell = this.$board.find(pos);
+    return $cell
+  }
+  View.prototype.render = function () {
+    clearBoard.call(this);
+    this.game.snake.body.forEach(function(el){
+      pos.call(this,el).css("background", "green");
+    }.bind(this));
+    
+    var $apple = pos.call(this, this.game.board.apple);
+    $apple.css("background", "red");
   }
   
 })();
