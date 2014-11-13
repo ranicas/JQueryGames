@@ -19,7 +19,13 @@
 
   View.prototype.makeMove = function (event) {
     var $square = $(event.target);
-    $square.css("background", "fuchsia");
+    if (this.game.isOver()) {
+      return;
+    }
+    if ($square.attr("class") !== "cell" ) {
+      return;
+    }
+    
     var squarePos = function (id) {
       var cnt = 0;
       
@@ -33,11 +39,25 @@
       }
     }
     var pos = squarePos(parseInt($square.attr("id")));
-    if (this.game.currentPlayer === 'x') {
-      
+    try {
+      this.game.playMove(pos);
+    } catch(err) {
+      alert("Invalid Move!");
     }
-    this.game.playMove(pos);
     
+    if (this.game.currentPlayer === 'x') {
+      $square.css("background", "blue");
+    } else if (this.game.currentPlayer === 'o'){
+      $square.css("background", "red");
+    }
+    
+    if (this.game.isOver()) {
+      if (this.game.winner()) {
+        return alert(this.game.winner() + " has won!");
+      } else {
+        return alert("NO ONE WINS!");
+      }
+    }
   };
 
   View.prototype.setupBoard = function () {
